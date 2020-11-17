@@ -1,0 +1,79 @@
+﻿@page "/inicio"
+@inject Tarea9_10.Services.UsuarioServicio servicio
+@inject AuthenticationStateProvider auth
+@using Tarea9_10.Data
+@using Tarea9_10.Models
+@inject NavigationManager nav
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject IJSRuntime js
+
+<AuthorizeView>
+    <Authorized>
+        <a>Good try mate... Good try...</a>
+    </Authorized>
+    <NotAuthorized>
+        <div class="col-5 bg-light m-2 justify-content-start">
+            <div class="p-3 mb-3 bg-primary text-white text-center">Log In</div>
+
+            <div class="form-group">
+                <label>Correo</label>
+                <input type="email" class="form-control" @bind-value="@correo" />
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" class="form-control" @bind="@clave" />
+            </div>
+            <div class="text-center p-3 mb-3">
+                <button class="btn btn-info" @onclick="Verificar">Log In</button>
+            </div>
+
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+    List<Usuario> Usuarios = new List<Usuario>();
+
+
+    string correo, clave;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Usuarios = await servicio.GetUsuariosAsync();
+
+    }
+
+    private async Task Verificar()
+    {
+        var usu = Usuarios.FirstOrDefault(u => u.Correo.Equals(correo));
+        if (usu == null)
+        {
+            await js.InvokeAsync<bool>("confirm", "Correo Incorrecto");
+        }
+        else
+        {
+            var id = usu.Id;
+            var pass = usu.Clave;
+            if (pass != clave)
+            {
+                await js.InvokeAsync<bool>("confirm", "Contraseña Incorrecta");
+            }
+            else
+            {
+                await Correcto();
+            }
+        }
+    }
+
+    private async Task<bool> Correcto()
+    {
+        ((Authorize)auth).Logeado(correo);
+        nav.NavigateTo("/");
+        await sessionStorage.SetItemAsync("correo", correo);
+        return await Task.FromResult(true);
+    }
+
+
+}

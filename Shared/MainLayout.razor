@@ -1,0 +1,33 @@
+﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider auth
+@using Tarea9_10.Data
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <AuthorizeView>
+            <Authorized>
+                <a href="/inicio" @onclick="(()=> Logout())">Log out</a>
+            </Authorized>
+            <NotAuthorized>
+                <a href="/registrar">Registrarse</a>
+                <a href="/inicio">Log in</a>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
+
+@code{
+
+    public void Logout()
+    {
+        ((Authorize)auth).Deslogueado();
+    }
+}

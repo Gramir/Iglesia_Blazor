@@ -1,0 +1,121 @@
+﻿@page "/"
+@inject Tarea9_10.Services.MiembrosServicio servicio
+@using Tarea9_10.Models
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject IJSRuntime Js
+@inject NavigationManager nav
+@attribute [Authorize]
+
+<div class="p-3 mb-3 bg-primary text-white text-center">Miembros registrados</div>
+<div>
+    <a>Buscar por nombre</a>
+    <br />
+    
+    <input type="text" @bind-value="@buscar" />
+    <button type="button" class="btn btn-info" @onclick="Buscar">Buscar</button><br />
+</div><br />
+<div>
+    <button type="button" class="btn btn-info" @onclick="registro">Registrar nuevo Integrante</button>
+</div>
+
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Foto</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Sexo</th>
+                <th>Pais de Nacimiento</th>
+                <th>Telefono   </th>
+                <th>Celular    </th>
+                <th>Tipo de ID  </th>
+                <th>Numero ID    </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Miembros.Any())
+            {
+                @foreach (var Miembro in Miembros)
+                {
+                    <tr>
+                        <td><img src=@string.Format("data:image/jpg;base64, {0}", Convert.ToBase64String(getImage(Convert.ToBase64String(Miembro.Foto)))) width="100" height="100" /></td>
+                        <td>@Miembro.Nombres</td>
+                        <td>@Miembro.Apellidos</td>
+                        <td>@Miembro.Sexo</td>
+                        <td>@Miembro.Pais_Nac</td>
+                        <td>@Miembro.Telefono</td>
+                        <td>@Miembro.Celular</td>
+                        <td>@Miembro.Tipo_Docum</td>
+                        <td>@Miembro.Documento_ID</td>
+                        <td><button class="btn btn-dark" @onclick="(() => SetMiembroUpdate(Miembro))">Editar</button></td>
+                        <td><button class="btn btn-danger" @onclick="(() => BorrarMiembro(Miembro))">Borrar</button></td>
+                    </tr>
+                }
+
+            }
+            else
+            {
+                <tr><td colspan="6"><strong>No se han encontrado miembros </strong></td></tr>
+            }
+        </tbody>
+    </table>
+
+
+@code{
+    List<Persona> Miembros = new List<Persona>();
+    string buscar = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefrescarMiembros();
+
+    }
+
+    public byte[] getImage(string sBase64String)
+    {
+        byte[] bytes = null;
+        if (sBase64String != null)
+        {
+            bytes = Convert.FromBase64String(sBase64String);
+        }
+
+        return bytes;
+    }
+
+    private async Task RefrescarMiembros()
+    {
+        Miembros = await servicio.GetPersonasAsync();
+    }
+
+    private async Task BorrarMiembro(Persona persona)
+    {
+
+        if (await Js.InvokeAsync<bool>("confirm", "Esta seguro que desea eliminar esta entrada?"))
+            await servicio.BorrarPersona(persona);
+        else
+            await RefrescarMiembros();
+    }
+
+    private void SetMiembroUpdate(Persona persona)
+    {
+        int id = persona.Id;
+        sessionStorage.SetItemAsync<int>("Id", id);
+        nav.NavigateTo("/editar");
+    }
+
+    private async Task Buscar()
+    {
+
+        var results = await servicio.BuscarPersona(buscar);
+        Miembros = results;
+
+    }
+
+    private void registro()
+    {
+        nav.NavigateTo("/registro");
+    }
+}

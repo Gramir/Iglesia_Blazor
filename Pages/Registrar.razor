@@ -1,0 +1,71 @@
+﻿@page "/registrar"
+@inject Tarea9_10.Services.UsuarioServicio servicio
+@using Tarea9_10.Models
+@inject AuthenticationStateProvider auth
+@inject NavigationManager nav
+@inject IJSRuntime Js
+
+
+<div class="col-5 bg-light m-2 justify-content-start">
+    <div class="p-3 mb-3 bg-primary text-white text-center">Registrar Usuario</div>
+    <EditForm Model="@NuevoUsuario" OnInvalidSubmit="Verificar">
+        <div class="form-group">
+            <label>Correo</label>
+            <input type="email" id="correo" class="form-control" @bind-value="@NuevoUsuario.Correo" required />
+        </div>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="contraseña" class="form-control" @bind="@NuevoUsuario.Clave" required />
+        </div>
+        <div class="form-group">
+            <label>Confirmar Contraseña</label>
+            <input type="password" id="contraseña" class="form-control" @bind="@Clave" required />
+        </div>
+        <div class="text-center p-3 mb-3">
+            <button class="btn btn-info"> Completar Registro</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    public Usuario NuevoUsuario { get; set; } = new Usuario();
+    List<Usuario> Usuarios = new List<Usuario>();
+    string Clave;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Usuarios = await servicio.GetUsuariosAsync();
+    }
+
+    private async Task AgregarUsuario()
+    {
+
+        await servicio.AgregarUsuario(NuevoUsuario);
+        await Js.InvokeAsync<bool>("confirm", "Usuario Guardado!");
+        nav.NavigateTo("/inicio");
+
+    }
+
+    private async Task Verificar()
+    {
+
+        var match = Usuarios.Any(u => u.Correo == NuevoUsuario.Correo);
+        if (match == true)
+        {
+            await Js.InvokeAsync<bool>("confirm", "Correo ya existe");
+        }
+        else
+        {
+            if(NuevoUsuario.Clave != Clave)
+            {
+                await Js.InvokeAsync<bool>("confirm", "Contraseñas no coinciden");
+            }
+            else
+            {
+                await AgregarUsuario();
+            }
+        }
+
+    }
+    }
+
