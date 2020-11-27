@@ -65,8 +65,8 @@
 
 
 @code{
-    List<Persona> Miembros = new List<Persona>();
-    string buscar = "";
+        List<Persona> Miembros = new List<Persona>();
+        string buscar = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,7 +94,10 @@
     {
 
         if (await Js.InvokeAsync<bool>("confirm", "Esta seguro que desea eliminar esta entrada?"))
+        {
             await servicio.BorrarPersona(persona);
+            await RefrescarMiembros();
+        }
         else
             await RefrescarMiembros();
     }

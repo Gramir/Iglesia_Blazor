@@ -10,14 +10,14 @@
 
 <div>
     <div class="p-3 mb-3 bg-primary text-white text-left">Datos Personales</div>
-    <EditForm Model="@persona">
+    <EditForm Model="@persona" OnValidSubmit="@ValidSubmit">
         <ValidationSummary />
         <div class="form-group">
 
             <b>Foto</b> <br /> <InputFile OnChange="HandleFileSelection" /> <br />
             @if (_fileBytes == null)
             {
-                <img required />
+                <img />
             }
             else
             {
@@ -561,16 +561,16 @@
             <b>Ciudad de residencia actual </b> <br /> <InputText @bind-Value="@persona.Ciudad_Res" required></InputText>
         </div>
         <div class="form-group">
-            <b>Direccion(Provincia / sector / calle / No. de vivienda) </b> <br /> <InputTextArea @bind-Value="@persona.Direccion"></InputTextArea>
+            <b>Direccion(Provincia / sector / calle / No. de vivienda) </b> <br /> <InputTextArea @bind-Value="@persona.Direccion" required></InputTextArea>
         </div>
         <div class="form-group">
-            <b>Telefono </b> <br /> <InputText @bind-Value="@persona.Telefono"></InputText>
+            <b>Telefono </b> <br /> <input type="tel" placeholder="8091111111" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" @bind-value="@persona.Telefono" required /> <br /> <small>Formato: 1234516781</small><br>
         </div>
         <div class="form-group">
-            <b>Celular </b> <br /> <InputText @bind-Value="@persona.Celular"></InputText>
+            <b>Celular </b> <br /> <input type="tel" placeholder="8091111111" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" @bind-value="@persona.Celular" required /> <br /> <small>Formato: 1234516781</small><br>
         </div>
         <div class="form-group">
-            <b>Correo electronico </b> <br /> <input type="email" @bind-value="@persona.Correo" />
+            <b>Correo electronico </b> <br /> <input type="email" @bind-value="@persona.Correo" required />
         </div>
         <div class="form-group">
             <b>Tipo de Documento de identidad</b> <br /> Cédula <InputCheckbox @bind-Value="cedula" @onclick="Cedula"></InputCheckbox> Pasaporte <InputCheckbox @bind-Value="pasaporte" @onclick="Pasaporte"></InputCheckbox> DNI <InputCheckbox @bind-Value="dni" @onclick="DNI"></InputCheckbox><br />
@@ -658,9 +658,18 @@
             }
             <input type="text" @bind-value="@persona.EstadoCivil" hidden />
         </div>
-        <div class="form-group" hidden="@casado">
-            <b>Nombre esposo(a) </b> <br /> <InputText @bind-Value="@persona.Casado" required></InputText>
-        </div>
+        @if (casado)
+        {
+            <div class="form-group" hidden="@casado">
+                <b>Nombre esposo(a) </b> <br /> <InputText @bind-Value="@persona.Casado"></InputText>
+            </div>
+        }
+        else
+        {
+            <div class="form-group" hidden="@casado">
+                <b>Nombre esposo(a) </b> <br /> <InputText @bind-Value="@persona.Casado" required></InputText>
+            </div>
+        }
 
         <div class="form-group">
             <b>Hijos: </b> <br /> Si <InputCheckbox @bind-Value="si" @onclick="Si"></InputCheckbox> No <InputCheckbox @bind-Value="no" @onclick="No"></InputCheckbox><br />
@@ -695,10 +704,18 @@
                 }
             }
         </div>
-
-        <div class="form-group" hidden="@Nhijos">
-            <b>No. Hijos </b> <br /> <InputNumber @bind-Value="@persona.N_Hijos" required></InputNumber>
-        </div>
+        @if (Nhijos)
+        {
+            <div class="form-group" hidden="@Nhijos">
+                <b>No. Hijos </b> <br /> <input type="number" min="1" max="99" @bind-value="@persona.N_Hijos" />
+            </div>
+        }
+        else
+        {
+            <div class="form-group" hidden="@Nhijos">
+                <b>No. Hijos </b> <br /> <input type="number" min="1" max="99" @bind-value="@persona.N_Hijos" required />
+            </div>
+        }
 
 
         <div class="p-3 mb-3 bg-primary text-white text-left">Datos Laborales</div>
@@ -712,7 +729,7 @@
             <b>Nombre de la empresa o negocio </b> <br /> <InputText @bind-Value="@persona.Empr_Negocio" required></InputText>
         </div>
         <div class="form-group">
-            <b>Telefono </b> <br /> <InputText @bind-Value="@persona.Prof_Tele" required></InputText>
+            <b>Telefono </b> <br /> <input type="tel" placeholder="8091111111" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" @bind-value="@persona.Prof_Tele" required /> <br /> <small>Formato: 1234516781</small><br>
         </div>
 
 
@@ -742,7 +759,7 @@
             @functions{
                 bool baut, pent, meto, cato, pres, adve, tem, meno, lute, otra;
                 bool hidden = true;
-                
+
 
                 void Baut()
                 {
@@ -763,7 +780,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Pent()
@@ -784,7 +801,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Meto()
@@ -805,7 +822,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Cato()
@@ -826,7 +843,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Pres()
@@ -847,7 +864,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Adve()
@@ -868,7 +885,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Tem()
@@ -889,7 +906,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Meno()
@@ -910,7 +927,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Lute()
@@ -931,7 +948,7 @@
                         otra = true;
                         hidden = false;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
                 void Otra()
@@ -953,11 +970,18 @@
                         baut = true;
                         hidden = true;
                         persona.Denominacion = null;
-                        
+
                     }
                 }
             }
-            <InputText @bind-Value="persona.Denominacion" hidden="@hidden" required></InputText>
+            @if (hidden)
+            {
+                <InputText @bind-Value="persona.Denominacion" hidden="@hidden"></InputText>
+            }
+            else
+            {
+                <InputText @bind-Value="persona.Denominacion" hidden="@hidden" required></InputText>
+            }
         </div>
         <div class="form-group">
             <b>Nombre de la Iglesia	a la que asiste actualmente </b> <br /> <InputText @bind-Value="@persona.Iglesia_Actual" required></InputText>
@@ -1008,10 +1032,20 @@
                 }
             }
             <input type="text" @bind-value="persona.Disciplinado" hidden />
-            <div hidden="@veces">
-                <b>¿Cuántas	veces? </b> <br /> <InputNumber @bind-Value="persona.Cant_Disc" required></InputNumber><br />
-                <b>Causas </b> <br /><InputTextArea @bind-Value="persona.Causas" required></InputTextArea>
-            </div>
+            @if (veces)
+            {
+                <div hidden="@veces">
+                    <b>¿Cuántas	veces? </b> <br /> <InputNumber @bind-Value="persona.Cant_Disc"></InputNumber><br />
+                    <b>Causas </b> <br /><InputTextArea @bind-Value="persona.Causas"></InputTextArea>
+                </div>
+            }
+            else
+            {
+                <div hidden="@veces">
+                    <b>¿Cuántas	veces? </b> <br /> <input type="number" min="1" max="9999" @bind-value="persona.Cant_Disc" required><br />
+                    <b>Causas </b> <br /><InputTextArea @bind-Value="persona.Causas" required></InputTextArea>
+                </div>
+            }
         </div>
         <div class="form-group">
             <b>En la actualidad	ocupa usted alguna de estas	funciones: </b> <br />
@@ -1358,18 +1392,27 @@
                 }
             }
             <input type="text" @bind-value="@persona.Expulsado" hidden />
-            <div hidden="@sus">
-                <b>¿Por	qué	razón?</b> <br /> <InputText @bind-Value="@persona.Exp_Razon" required></InputText>
-            </div>
+            @if (sus)
+            {
+                <div hidden="@sus">
+                    <b>¿Por	qué	razón?</b> <br /> <InputText @bind-Value="@persona.Exp_Razon"></InputText>
+                </div>
+            }
+            else
+            {
+                <div hidden="@sus">
+                    <b>¿Por	qué	razón?</b> <br /> <InputText @bind-Value="@persona.Exp_Razon" required></InputText>
+                </div>
+            }
         </div>
-        <button class="btn btn-primary" @onclick="ValidSubmit">Guardar</button>
+        <button class="btn btn-primary" type="submit">Guardar</button>
     </EditForm>
 </div>
 
 @code {
 
-    Persona persona = new Persona();
-    
+    private  Persona persona = new Persona();
+
 
     IFileListEntry file = null;
     public byte[] _fileBytes = null;
@@ -1384,7 +1427,7 @@
 
     }
 
-    
+
 
     public async Task HandleFileSelection(IFileListEntry[] files)
     {
@@ -1438,16 +1481,19 @@
                                 await js.InvokeAsync<bool>("confirm", "Debe seleccionar si tiene hijos");
                             else
                             {
-                                
-                                    if (persona.Denominacion == null)
-                                        await js.InvokeAsync<bool>("confirm", "Debe seleccionar su denominacion");
+
+                                if (persona.Denominacion == null)
+                                    await js.InvokeAsync<bool>("confirm", "Debe seleccionar su denominacion");
+                                else
+                                {
+                                    if (persona.Disciplinado == null)
+                                        await js.InvokeAsync<bool>("confirm", "Debe seleccionar si ha sido disciplinado");
                                     else
                                     {
-                                        if (persona.Disciplinado == null)
-                                            await js.InvokeAsync<bool>("confirm", "Debe seleccionar si ha sido disciplinado");
+                                        if (persona.Funcion == null)
+                                            await js.InvokeAsync<bool>("confirm", "Debe seleccionar su funcion");
                                         else
                                         {
-                                            
                                             if (persona.Respaldo == null)
                                                 await js.InvokeAsync<bool>("confirm", "Debe seleccionar si tiene respaldo");
                                             else
@@ -1460,7 +1506,8 @@
                                                 }
                                             }
                                         }
-                                    
+                                    }
+
                                 }
                             }
                         }
@@ -1477,5 +1524,5 @@
         await js.InvokeAsync<bool>("confirm", "Miembro guardado correctamente");
         nav.NavigateTo("/");
     }
-  
+
 }

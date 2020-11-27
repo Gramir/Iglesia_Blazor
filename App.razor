@@ -1,11 +1,16 @@
-﻿<Router AppAssembly="@typeof(Program).Assembly">
+﻿ 
+<Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized>
+                <AuthCallenge></AuthCallenge>
+            </NotAuthorized>
+        </AuthorizeRouteView>
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
+                <p>404, Pagian no encontrada</p>
             </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>

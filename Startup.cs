@@ -31,8 +31,8 @@ namespace Tarea9_10
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IglesiaDbContext>(options =>
-                options.UseSqlite
-                    ("Data Source = Iglesia.db"));
+                options.UseSqlServer
+                    ("Data Source=SQL5097.site4now.net;Initial Catalog=DB_A6AB6E_gramir;User Id=DB_A6AB6E_gramir_admin;Password=albert809"));
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<MiembrosServicio>();

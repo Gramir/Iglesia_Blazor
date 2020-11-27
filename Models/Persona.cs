@@ -34,6 +34,7 @@ namespace Tarea9_10.Models
         [Phone]
         public string Telefono { get; set; }
         [Required]
+        [Phone]
         public string Celular { get; set; }
         [Required]
         [EmailAddress]
